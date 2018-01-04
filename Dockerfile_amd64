@@ -1,0 +1,37 @@
+FROM riccardoblb/jdk8:amd64
+
+MAINTAINER Riccardo Balbo <riccardo0blb@gmail.com>
+
+ENV OPENFIRE="http://www.igniterealtime.org/builds/openfire/openfire_4_2_1.tar.gz"
+ARG OPENFIRE_HASH="a16b0ca9156d62dac048243f9faf565b797a52eb22726a985e50b39f8779400f"
+
+USER root
+
+RUN cd tmp \
+&&apk add --no-cache openssl  \
+&&wget ${OPENFIRE} -O openfire.tar.gz \
+&& hash="`sha256sum openfire.tar.gz| cut -d ' ' -f 1`" \
+&& if [ "$hash" != "${OPENFIRE_HASH}" ]; then  echo "${OPENFIRE} hash does not match. ${OPENFIRE_HASH} != $hash"; exit 1 ; fi \
+&&mkdir  openfire_ex \
+&&tar -xzf openfire.tar.gz -C openfire_ex \
+&&mkdir -p /opt/openfire \
+&&cd openfire_ex/openfire*/  \
+&&cp -Rp  . /opt/openfire/ \
+&&cd /tmp \
+&&rm -Rf openfire* \
+&&chown -R java:java /opt/openfire \
+&& rm -f /opt/openfire/logs/info.log \
+&& ln -sf /dev/stdout  /opt/openfire/logs/info.log \
+&& rm -f  /opt/openfire/logs/debug.log \
+&& ln -sf /dev/stdout  /opt/openfire/logs/debug.log \
+&& rm  -f /opt/openfire/logs/error.log \
+&& ln -sf /dev/stderr /opt/openfire/logs/error.log  \ 
+&& echo "#/bin/sh" > /opt/openfire/run.sh  \
+&& echo "/opt/openfire/bin/openfire run" >> /opt/openfire/run.sh && \
+chmod +x /opt/openfire/run.sh 
+
+EXPOSE 5222 7070 7443 5269 5275 5276 5262 5263 9091 7777 5229 10000-20000 	
+
+USER java
+CMD "/opt/openfire/run.sh"
+
