@@ -2,8 +2,8 @@ FROM riccardoblb/jdk8:amd64
 
 MAINTAINER Riccardo Balbo <riccardo0blb@gmail.com>
 
-ENV OPENFIRE="http://www.igniterealtime.org/builds/openfire/openfire_4_2_1.tar.gz"
-ARG OPENFIRE_HASH="a16b0ca9156d62dac048243f9faf565b797a52eb22726a985e50b39f8779400f"
+ENV OPENFIRE="http://www.igniterealtime.org/builds/openfire/openfire_4_2_3.tar.gz"
+ARG OPENFIRE_HASH="a2cc1666e6cc9e742936f994b8a7e2c37231e8d0d9f6b7dc4230d2e4600fd3dd"
 
 USER root
 
