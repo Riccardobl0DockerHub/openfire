@@ -1,11 +1,14 @@
-FROM riccardoblb/jdk8:amd64
+FROM openjdk:8-alpine
 
 MAINTAINER Riccardo Balbo <riccardo0blb@gmail.com>
 
-ENV OPENFIRE="http://www.igniterealtime.org/builds/openfire/openfire_4_2_3.tar.gz"
-ARG OPENFIRE_HASH="a2cc1666e6cc9e742936f994b8a7e2c37231e8d0d9f6b7dc4230d2e4600fd3dd"
+ENV OPENFIRE="http://www.igniterealtime.org/builds/openfire/openfire_4_3_2.tar.gz"
+ARG OPENFIRE_HASH="fc7d8dbd8f3771f6f440f456dc9efc1cb50d0018044eb9bdb64472694352f4dc"
 
 USER root
+
+RUN  addgroup -g 1000 -S java && adduser -u 1000 -S -D -G java java
+  
 
 RUN cd tmp \
 &&apk add --no-cache openssl  \
@@ -20,6 +23,7 @@ RUN cd tmp \
 &&cd /tmp \
 &&rm -Rf openfire* \
 &&chown -R java:java /opt/openfire \
+&&mkdir -p /opt/openfire/logs/ \
 && rm -f /opt/openfire/logs/info.log \
 && ln -sf /dev/stdout  /opt/openfire/logs/info.log \
 && rm -f  /opt/openfire/logs/debug.log \
